@@ -1,10 +1,9 @@
 
 import { productsModel } from '../dao/models/products.model.js';
-export default class productsService {
+export default class productsRepository {
 
-    async addProductviaService(ObjectProduct) {
+    async addProduct(title, description, price, thumbnail, code, stock, status, category ) {
         try {
-            const { title, description, price, thumbnail, code, stock, status, category } = ObjectProduct;
             const product = await productsModel.create({
                 title,
                 description,
@@ -21,7 +20,7 @@ export default class productsService {
         }
     }
 
-    async getProductNpaginviaService() {
+    async getProductNpagin() {
         try {
             const products = await productsModel.find().lean();
             return products;
@@ -30,7 +29,8 @@ export default class productsService {
             return `ERR|Error generico. Descripcion :${error}`
         }
     }
-    async getProductWpaginviaService(limit, page, sort_, query) {
+
+    async getProductWpagin(limit, page, sort_, query) {
         try {
             let key = "";
             let value = "";
@@ -67,15 +67,12 @@ export default class productsService {
         }
     }
 
-    async getProductbyIDviaService(pid) {
+    async getProductbyID(pid) {
         try {
             
             const found = await productsModel.find({ _id: pid });
-           
             if (found === undefined || found ==[] || found == null || Object.keys(found).length === 0){
-               
                 return `E02|El producto con el id ${pid._id} no se encuentra agregado.`;
-
             } 
             return found;
 
@@ -84,7 +81,7 @@ export default class productsService {
         }
     }
 
-    async updateProductviaService(pid, product) {
+    async updateProduct(pid, product) {
         try {
 
             const { title, description, price, thumbnail, code, stock, status, category } = product;
@@ -116,7 +113,7 @@ export default class productsService {
           }
 
     }
-    async deletProductviaService(pid) {
+    async deletProduct(pid) {
         try {
             const found = await productsModel.find({ _id: pid });
             if (found == undefined || Object.keys(found).length === 0) return `E02|El producto con el id ${pid._id} no se encuentra agregado.`;

@@ -1,127 +1,202 @@
-import { cartsModel } from '../models/carts.model.js';
-import { productsModel } from '../models/products.model.js';
-import ProductManager from './ProductManager.js';
-import cartsService from '../../services/cartService.js'
-const CartsService = new cartsService()
-const productManager = new ProductManager()
+import CartsRepository from '../../repository/cartRepository.js'
+const cartsRepository = new CartsRepository()
 
-class CartManager {
+export const getCartById = async (req, res, next) => {
+  try {
+    const cid = req.params.cid
+    const CartById = await cartsRepository.getCartbyID(cid)
+    const isString = (value) => typeof value === 'string';
 
-  async addCart() {
-
-    try {
-      let carnew
-      return carnew = await CartsService.addCartviaService()
-
-    } catch (error) {
-      return `ERR|Error generico. Descripcion :${error}`
+    if (isString(CartById)) {
+        const arrayAnswer = ManageAnswer(CartById)
+        return res.status(arrayAnswer[0]).send({
+            status: arrayAnswer[0],
+            message: arrayAnswer[1]
+        })
     }
+
+    return res.send(CartById);
+
+  } catch (error) {
+    return `ERR|Error generico. Descripcion :${error}`
   }
+}
+export const getProductsinCartById = async (req, res, next) => {
+  try {
+    const cid = req.params.cid
 
-  async addCartProducts(pid, cid) {
+    const cartObject = await cartsRepository.getProductsinCartbyID(cid)
 
-    try {
-      const answer = await CartsService.addCartProductsviaService(pid, cid)
-
-      if (answer == undefined || answer.length === 0) return `E02|El carro con el id ${cid} no se encuentra agregado.`;
-
-      return answer
-
-    } catch (error) {
-      return `ERR|Error generico. Descripcion :${error}`
+    const isString = (value) => typeof value === 'string';
+    if (isString(cartObject)) {
+        const arrayAnswer = ManageAnswer(cartObject)
+        return res.status(arrayAnswer[0]).send({
+            status: arrayAnswer[0],
+            message: arrayAnswer[1]
+        })
     }
+    return res.send(cartObject);
+
+  } catch (error) {
+    return `ERR|Error generico. Descripcion :${error}`
   }
-
-  async getCarts() {
-    try {
-      const allCarts = await CartsService.getcartsviaService();
-      return allCarts
-
-    } catch (error) {
-      return `ERR|Error generico. Descripcion :${error}`
+}
+export const getCarts = async (req, res, next) => {
+  try {
+    const limit = req.query.limit;
+    const allCarts = await cartsRepository.getcarts();
+    const isString = (value) => typeof value === 'string';
+    if (isString(allCarts)) {
+        const arrayAnswer = ManageAnswer(allCarts)
+        return res.status(arrayAnswer[0]).send({
+            status: arrayAnswer[0],
+            message: arrayAnswer[1]
+        })
     }
+    if (limit) {
+
+        return res.send(allCarts.slice(0, limit));
+    }
+    return res.send(allCarts.sort((a, b) => a.id - b.id));
+
+  } catch (error) {
+    return `ERR|Error generico. Descripcion :${error}`
   }
+}
+export const addCartasync = async (req, res, next) => {
 
-  async getCartById(cid) {
-    try {
+  try {
+    const answer = await cartsRepository.addCart()
+    const arrayAnswer = ManageAnswer(answer)
+    return res.status(arrayAnswer[0]).send({
+        status: arrayAnswer[0],
+        message: arrayAnswer[1]
+    })
 
-      const CartById = await CartsService.getCartbyIDviaService(cid)
-
-      if (CartById == undefined) return `E02|El carro con el id ${cid} no se encuentra agregado.`;
-
-      return CartById
-
-    } catch (error) {
-      return `ERR|Error generico. Descripcion :${error}`
-    }
+  } catch (error) {
+    return `ERR|Error generico. Descripcion :${error}`
   }
+}
+export const addCartProducts = async (req, res, next) => {
 
-  async getProductsinCartById(cid) {
-    try {
-      const cartObject = await CartsService.getProductsinCartbyIDviaService(cid)
+  try {
+    const cid = req.params.cid
+    const pid = req.params.pid
+    const answer = await cartsRepository.addCartProducts(pid, cid)
+    const arrayAnswer = ManageAnswer(answer)
+    return res.status(arrayAnswer[0]).send({
+        status: arrayAnswer[0],
+        message: arrayAnswer[1]
+    })
 
-      return cartObject
-
-    } catch (error) {
-      return `ERR|Error generico. Descripcion :${error}`
-    }
+  } catch (error) {
+    return `ERR|Error generico. Descripcion :${error}`
   }
-
-  async deleteCart(cid) {
-    try {
-      return await CartsService.deleteCartviaService({ _id: cid })
-    }
-    catch (error) {
-      return `ERR|Error generico. Descripcion :${error}`
-    }
+}
+export const deleteCartProduct = async (req, res, next) =>{
+  try {
+    const cid = req.params.cid
+    const pid = req.params.pid
+    const answer =  await cartsRepository.deleteCartProduct(pid, cid)
+    const arrayAnswer = ManageAnswer(answer)
+    return res.status(arrayAnswer[0]).send({
+        status: arrayAnswer[0],
+        message: arrayAnswer[1]
+    })
   }
-
-  async deleteCartProduct(pid, cid) {
-    try {
-      return await CartsService.deleteCartProductviaService(pid, cid)
-    }
-    catch (error) {
-      return `ERR|Error generico. Descripcion :${error}`
-    }
+  catch (error) {
+    return `ERR|Error generico. Descripcion :${error}`
   }
-
-  async deleteAllCartProducts(cid) {
-    try {
-      const CartById = await CartsService.deleteAllCartProductsviaService(cid)
-
-      return CartById
-    }
-    catch (error) {
-      return `ERR|Error generico. Descripcion :${error}`
-    }
+}
+export const deleteCart = async (req, res, next) => {
+  try {
+    const cid = req.params.cid
+    const answer =  await cartsRepository.deleteCart({ _id: cid })
+    const arrayAnswer = ManageAnswer(answer)
+    return res.status(arrayAnswer[0]).send({
+        status: arrayAnswer[0],
+        message: arrayAnswer[1]
+    })
   }
-
-  async updateCartProductQuantity(pid, cid, quantity_) {
-    try {
-
-
-      const CartById = await CartsService.updateProductQuantityviaService(pid, cid, quantity_)
-
-      return CartById
-    }
-    catch (error) {
-      return `ERR|Error generico. Descripcion :${error}`
-    }
+  catch (error) {
+    return `ERR|Error generico. Descripcion :${error}`
   }
-
-  async updateCartProducts(cid, products) {
-    try {
-      const answer = await CartsService.updateCartProducstviaService(cid, products)
-      
-      return answer
-    }
-    catch (error) {
-      return `ERR|Error generico. Descripcion :${error}`
-    }
+}
+export const deleteAllCartProducts = async (req, res, next) => {
+  try {
+    const cid = req.params.cid
+    const answer = await cartsRepository.deleteAllCartProducts(cid)
+    const arrayAnswer = ManageAnswer(answer)
+    return res.status(arrayAnswer[0]).send({
+        status: arrayAnswer[0],
+        message: arrayAnswer[1]
+    })
+  }
+  catch (error) {
+    return `ERR|Error generico. Descripcion :${error}`
+  }
+}
+export const updateCartProductQuantity = async (req, res, next) => {
+  try {
+    const cid = req.params.cid
+    const pid = req.params.pid
+    let quantity_ = req.body
+    const answer = await cartsRepository.updateProductQuantity(pid, cid, quantity_)
+    const arrayAnswer = ManageAnswer(answer)
+    return res.status(arrayAnswer[0]).send({
+        status: arrayAnswer[0],
+        message: arrayAnswer[1]
+    })
+  }
+  catch (error) {
+    return `ERR|Error generico. Descripcion :${error}`
+  }
+}
+export const updateCartProducts = async (req, res, next) => {
+  try {
+    const cid = req.params.cid
+    let products = req.body
+    const answer = await cartsRepository.updateCartProducst(cid, products)
+    const arrayAnswer = ManageAnswer(answer)
+    return res.status(arrayAnswer[0]).send({
+        status: arrayAnswer[0],
+        message: arrayAnswer[1]
+    })
+  }
+  catch (error) {
+    return `ERR|Error generico. Descripcion :${error}`
   }
 }
 
-export default CartManager;
+function ManageAnswer(answer) {
+  const arrayAnswer = []
+  if (answer) {
+    const splitString = answer.split("|");
+    switch (splitString[0]) {
+      case "E01":
+        arrayAnswer.push(400)
+        arrayAnswer.push(splitString[1])
+        return arrayAnswer
+        break;
+      case "E02":
+        arrayAnswer.push(404)
+        arrayAnswer.push(splitString[1])
+        return arrayAnswer
+        break;
+      case "SUC":
+        arrayAnswer.push(200)
+        arrayAnswer.push(splitString[1])
+        return arrayAnswer
+        break;
+      case "ERR":
+      default:
+        arrayAnswer.push(500)
+        arrayAnswer.push(splitString[1])
+        return arrayAnswer
+        break;
+    }
+  }
+}
 
 
 

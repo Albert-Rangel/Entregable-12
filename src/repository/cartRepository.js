@@ -1,9 +1,9 @@
 
 import { cartsModel } from '../dao/models/carts.model.js';
 import { productsModel } from '../dao/models/products.model.js';
-export default class cartsService {
+export default class cartsRepository {
 
-    async addCartviaService() {
+    async addCart() {
         let cart2 = {}
         try {
             cart2 = { products: [] }
@@ -15,7 +15,7 @@ export default class cartsService {
         }
     }
 
-    async addCartProductsviaService(pid, cid) {
+    async addCartProducts(pid, cid) {
         try {
             const cartObject = await cartsModel.findById({ _id: cid })
             if (cartObject == undefined || Object.keys(cartObject).length === 0) return `E02|El carro con el id ${cid} no se encuentra agregado.`;
@@ -44,7 +44,7 @@ export default class cartsService {
         }
     }
 
-    async getcartsviaService() {
+    async getcarts() {
         try {
             const allCarts = await cartsModel.find();
             return allCarts
@@ -55,7 +55,7 @@ export default class cartsService {
     }
 
 
-    async getCartbyIDviaService(cid) {
+    async getCartbyID(cid) {
         try {
 
             const CartById = await cartsModel.find({ _id: cid }).lean()
@@ -69,7 +69,7 @@ export default class cartsService {
         }
     }
 
-    async getProductsinCartbyIDviaService(cid) {
+    async getProductsinCartbyID(cid) {
         try {
             const cartObject = await cartsModel.find({ _id: cid }).lean()
             if (cartObject == undefined || Object.keys(cartObject).length === 0) return `E02|El carro con el id ${cid} no se encuentra agregado.`;
@@ -83,7 +83,7 @@ export default class cartsService {
         }
     }
 
-    async deleteCartviaService(cid) {
+    async deleteCart(cid) {
         try {
             const cartObject = await cartsModel.find({ _id: cid }).lean()
 
@@ -99,7 +99,7 @@ export default class cartsService {
 
     }
 
-    async deleteCartProductviaService(pid, cid) {
+    async deleteCartProduct(pid, cid) {
         try {
             console.log(pid)
             const CartById = await cartsModel.findById({ _id: cid })
@@ -156,7 +156,7 @@ export default class cartsService {
 
     }
 
-    async deleteAllCartProductsviaService(cid) {
+    async deleteAllCartProducts(cid) {
         const CartById = await cartsModel.findById({ _id: cid })
         if (CartById == undefined || CartById.length === 0) return `E02|El carro con el id ${cid} no se encuentra agregado.`;
 
@@ -168,7 +168,7 @@ export default class cartsService {
 
     }
 
-    async updateProductQuantityviaService(pid, cid, quantity_) {
+    async updateProductQuantity(pid, cid, quantity_) {
         try {
 
             let { quantity } = quantity_;
@@ -200,7 +200,7 @@ export default class cartsService {
     }
 
 
-    async updateCartProducstviaService(cid, productsnew) {
+    async updateCartProducst(cid, productsnew) {
         try {
             const CartById = await cartsModel.findById(cid)
 
