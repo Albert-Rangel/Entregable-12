@@ -1,6 +1,6 @@
 const privateRoutes = (req, res, next) => {
-
-    if (!req.session.isLogged) {
+console.log(req.session.isLogged)
+    if (req.session.user == undefined ||  !req.session.isLogged) {
         return res.redirect('/login');
     }
     next()

@@ -1,16 +1,16 @@
-import express, { Router } from "express"
+import express, { Router, json } from "express"
 import { uploader } from '../dao/middlewares/multer.js'
 import ProductManager from '../controllers/ProductManager.js'
 import CartManager from '../controllers/CartManager.js'
 import publicRoutes from "../dao/middlewares/publicRoutes.js"
 import privateRoutes from "../dao/middlewares/privateRoutes.js"
-import permissionsRoutes from "../dao/middlewares/permissionsRoutes.js"
+import permissionsRoutes from "../dao/middlewares/adminpermissionsRoutes.js"
 
 const productManager = new ProductManager();
 const cartManager = new CartManager()
 const router = express.Router()
 
-router.get("/realTimeProducts",privateRoutes, permissionsRoutes, async (req, res) => {
+router.get("/realTimeProducts", privateRoutes, permissionsRoutes, async (req, res) => {
     res.render("realTimeProducts", {
         title: "Real Time Products",
         style: "home.css"
@@ -19,7 +19,7 @@ router.get("/realTimeProducts",privateRoutes, permissionsRoutes, async (req, res
 
 router.get("/home", async (req, res) => {
     const allProducts = await productManager.getProducts_()
-    
+
     res.render("home", {
         title: "Cards Products",
         style: "home.css",
@@ -29,17 +29,19 @@ router.get("/home", async (req, res) => {
 })
 
 router.get("/products", privateRoutes, async (req, res) => {
-    
+
     const firstname = req.session.user.firstname;
     const lastname = req.session.user.lastname;
     const age = req.session.user.age;
     const email_ = req.session.user.email;
     const role = req.session.user.role;
+    const swAdmin = role === 'Admin' ? true : false;
+    console.log(swAdmin)
 
     res.render("catalog", {
         title: "Catalog",
         style: "catalog.css",
-        firstname, lastname, age, email_, role
+        firstname, lastname, age, email_, role, swAdmin
     })
 })
 
@@ -71,7 +73,7 @@ router.get('/login', publicRoutes, (req, res) => {
 });
 
 router.get('/recover', publicRoutes, (req, res) => {
-    
+
     res.render("recover", {
         title: "Recover Form",
         style: "recover.css"
@@ -112,7 +114,7 @@ router.get('/profile', privateRoutes, (req, res) => {
 });
 
 router.get('/failsignup', publicRoutes, (req, res) => {
-    
+
     res.render("failsignup", {
         title: "failinf page",
         style: "failsignup.css"
@@ -120,7 +122,7 @@ router.get('/failsignup', publicRoutes, (req, res) => {
 });
 
 router.get('/failogin', publicRoutes, (req, res) => {
-    
+
     res.render("faillogin", {
         title: "fail Login page",
         style: "failLogin.css"
@@ -130,7 +132,7 @@ router.get('/failogin', publicRoutes, (req, res) => {
 
 
 router.get('/test', publicRoutes, (req, res) => {
-    
+
     res.render("catalog", {
         title: "test catalog page",
         style: "catalog.css"
