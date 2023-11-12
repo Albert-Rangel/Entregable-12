@@ -28,13 +28,15 @@
 
 
 
-
-
+{{#if swUser}}
 <div class="container-fluid" style="display: inline">
     <h2>Product Catalog</h2>
     <span id="counter" style="display: block"></span>
     <div id="catalogo" class="row"></div>
 </div>
+{{/if}}
+
+
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/catalog.js"></script>

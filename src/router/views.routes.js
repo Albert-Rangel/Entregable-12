@@ -36,12 +36,13 @@ router.get("/products", privateRoutes, async (req, res) => {
     const email_ = req.session.user.email;
     const role = req.session.user.role;
     const swAdmin = role === 'Admin' ? true : false;
+    const swUser = role === 'User' ? true : false;
     console.log(swAdmin)
 
     res.render("catalog", {
         title: "Catalog",
         style: "catalog.css",
-        firstname, lastname, age, email_, role, swAdmin
+        firstname, lastname, age, email_, role, swAdmin,swUser
     })
 })
 
