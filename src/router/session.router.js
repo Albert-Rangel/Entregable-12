@@ -71,22 +71,21 @@ router.get("/githubcallback",
     res.redirect("/products")
   })
 
-router.get(
-  '/current', privateRoutes,
-  async (req, res) => {
-    res.send(req.user);
-  }
-);
-
-router.get("/suma", (req, res) => {
-  const child= fork("./operacioncompleja.js")
-
-  child.send("hola")
-  child.on("message", (result)=>{
-
-    res.send(`el resultado de la operacion es ; ${result}`)
-  })
-})
+  router.get(
+    '/current', privateRoutes,
+    async (req, res) => {
+      const dtouser = {
+        _id: req.user._id,
+        firstname: req.user.firstname,
+        lastname: req.user.lastname,
+        age: req.user.age,
+        email: req.user.email,
+        cart: null,
+        role: req.user.role,
+      }
+      res.send(dtouser);
+    }
+  );
 
 
 

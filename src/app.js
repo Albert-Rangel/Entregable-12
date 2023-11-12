@@ -3,16 +3,11 @@ import handlebars from "express-handlebars"
 import { Server } from 'socket.io'
 import __dirname from './utils.js'
 import ProductRoutes from './router/productMongo.routes.js'
-import CartRoutes from './router/cartMongo.routes.js'
+import CartManager from './controllers/CartManager.js'
 import ChatsRoutes from './router/chat.routes.js'
-import {
-  getProducts,
-  deleteProduct
-} from '../src/dao/controllers/ProductManager.js'
-import {
-  addCartProducts,
-  getCartById,
-} from  '../src/dao/controllers/CartManager.js'
+import CartRoutes from './router/cartMongo.routes.js'
+import EmailsRoutes from './router/email.routes.js'
+import ProductManager from './controllers/ProductManager.js'
 import ViewsRouter from './router/views.routes.js'
 import SessionRouter from './router/session.router.js'
 import passport from "passport"
@@ -23,6 +18,8 @@ import mongoose from "mongoose"
 import cookieParser from "cookie-parser"
 import config from "./config/env.config.js"
 
+const productManager = new ProductManager();
+const cartManager = new CartManager();
 
 const app = express()
 // const program = new Command();
@@ -57,7 +54,7 @@ Socketserverio.on('connection', async (socket) => {
 
   console.log(`client connected with id ${socket.id}`)
 
-  const productList = await getProducts(10, 1, null, null);
+  const productList = await productManager.getProducts(10, 1, null, null);
 
   await Socketserverio.emit('AllProducts', productList)
 
@@ -77,13 +74,13 @@ Socketserverio.on('connection', async (socket) => {
 
     }
     await productManager.addProduct(newProduct);
-    const productList = await getProducts(10, 1, null, null);
+    const productList = await productManager.getProducts(10, 1, null, null);
     Socketserverio.emit('AllProducts', productList)
   })
 
   socket.on('functionDeleteProduct', async (idp) => {
-    await deleteProduct(idp);
-    const productList = await getProducts();
+    await productManager.deleteProduct(idp);
+    const productList = await productManager.getProducts();
     Socketserverio.emit('AllProducts', productList)
   })
   socket.on('message', async (data) => {
@@ -92,11 +89,11 @@ Socketserverio.on('connection', async (socket) => {
     Socketserverio.emit('newMessage', messag)
   })
   socket.on('obtainCartInfo', async (cid) => {
-    const cart = await getCartById(cid)
+    const cart = await cartManager.getCartById(cid)
     Socketserverio.emit('cartInforSend', cart)
   })
   socket.on('addNewProducttoCart', async ({ pid, cid }) => {
-    const newproductincart = await addCartProducts(pid, cid)
+    const newproductincart = await cartManager.addCartProducts(pid, cid)
     Socketserverio.emit('newProductinCart', newproductincart)
   })
 })
@@ -132,6 +129,7 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 app.use('/api', SessionRouter)
+app.use('/api/email', EmailsRoutes)
 app.use('/api/products', ProductRoutes)
 app.use('/api/carts', CartRoutes)
 app.use('/api/chats', ChatsRoutes)

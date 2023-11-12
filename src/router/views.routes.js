@@ -1,16 +1,16 @@
 import express, { Router } from "express"
 import { uploader } from '../dao/middlewares/multer.js'
-import {
-    getProducts_,
-} from '../dao/controllers/ProductManager.js'
+import ProductManager from '../controllers/ProductManager.js'
+import CartManager from '../controllers/CartManager.js'
 import publicRoutes from "../dao/middlewares/publicRoutes.js"
 import privateRoutes from "../dao/middlewares/privateRoutes.js"
+import permissionsRoutes from "../dao/middlewares/permissionsRoutes.js"
 
-
-
+const productManager = new ProductManager();
+const cartManager = new CartManager()
 const router = express.Router()
 
-router.get("/realTimeProducts", async (req, res) => {
+router.get("/realTimeProducts",privateRoutes, permissionsRoutes, async (req, res) => {
     res.render("realTimeProducts", {
         title: "Real Time Products",
         style: "home.css"
@@ -18,7 +18,7 @@ router.get("/realTimeProducts", async (req, res) => {
 })
 
 router.get("/home", async (req, res) => {
-    const allProducts = await getProducts_()
+    const allProducts = await productManager.getProducts_()
     
     res.render("home", {
         title: "Cards Products",
@@ -46,7 +46,7 @@ router.get("/products", privateRoutes, async (req, res) => {
 router.get("/carts/:cid", async (req, res) => {
 
     const cid = req.params.cid
-    const allProducts = await getProductsinCartById(cid)
+    const allProducts = await cartManager.getProductsinCartById(cid)
     const isString = (value) => typeof value === 'string';
     if (isString(allProducts)) {
         const arrayAnswer = ManageAnswer(allProducts)
