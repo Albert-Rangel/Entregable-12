@@ -1,8 +1,8 @@
 const socket = io()
-//Le tengo cableado el cartid
-let cid = "6513926aea1ed4bc69f73a0d"
+let cid = ""
 
 socket.on('AllProductsCart', (data) => {
+  
     updateProductCatalogList(data);
 });
 
@@ -91,18 +91,17 @@ function updateCartProductsList(CartProductsList) {
     catalogDiv.innerHTML = contenidocambiante
 }
 
-const botonesCatalogo = (CatalogList) => {
+const botonesCatalogo = async (CatalogList) => {
     for (const catalogo of CatalogList.docs) {
         const botonId = `btn-catalogo-${catalogo.id}`;
         const botonNodo = document.getElementById(botonId);
         botonNodo.addEventListener("click", (evt) => {
             evt.preventDefault()
             let pid = catalogo.id;
-            console.log(pid)
-            console.log(cid)
-
+            const cartid = document.getElementById('cartid').innerHTML;
+           
             socket.emit('addNewProducttoCart', {
-                pid, cid,
+                pid, cartid,
             })
         });
     }

@@ -25,7 +25,6 @@ class ProductManager {
   async getProducts(limit, page, sort_, query) {
     try {
 
-      console.log(limit, page, sort_, query)
       const products = await productService.getProductWpaginviaService(limit, page, sort_, query)
 
       return products

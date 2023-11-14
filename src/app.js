@@ -25,7 +25,7 @@ const app = express()
 // const program = new Command();
 // const fileStore = FileStore(session)
 
-const port=config.port;
+const port = config.port;
 console.log(config)
 //Creacion del servidorHTTP
 const HTTPserver = app.listen(port, () =>
@@ -56,9 +56,13 @@ Socketserverio.on('connection', async (socket) => {
 
   const productList = await productManager.getProducts(10, 1, null, null);
 
+  
+  // const user = req.session.user
   await Socketserverio.emit('AllProducts', productList)
 
+  // await Socketserverio.emit('AllProductsCart', {productList, user})
   await Socketserverio.emit('AllProductsCart', productList)
+
 
   socket.on('sendNewProduct', async (newP) => {
 
@@ -92,8 +96,17 @@ Socketserverio.on('connection', async (socket) => {
     const cart = await cartManager.getCartById(cid)
     Socketserverio.emit('cartInforSend', cart)
   })
-  socket.on('addNewProducttoCart', async ({ pid, cid }) => {
+  socket.on('addNewProducttoCart', async ({ pid, cartid }) => {
+    console.log("ya en el server")
+    console.log(pid)
+    console.log("|" + cartid + "|")
+
+    const cid = cartid.substr(1, cartid.length - 1);
+    console.log(cid); // Output: ello, world!
+
+
     const newproductincart = await cartManager.addCartProducts(pid, cid)
+
     Socketserverio.emit('newProductinCart', newproductincart)
   })
 })

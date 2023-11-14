@@ -1,32 +1,50 @@
 import express, { Router } from "express"
-import nodemailer from 'nodemailer'
+import emailService from '../services/emailService.js';
+const EmailsService = new emailService()
 const router = express.Router()
 
-const transporter = nodemailer.createTransport({
-    host: 'smtp.ethereal.email',
-    port: 587,
-    auth: {
-        user: 'claudie.funk69@ethereal.email',
-        pass: '77VaKZY8tzXPWsqQuK'
-    }
-});
+
 
 router.get("/", async (req, res) => {
-    var message = {
-        from: "sender@server.com",
-        to: "claudie.funk69@ethereal.email",
-        subject: "PRUEBA",
-        text: "Plaintext version of the message",
-        html: "<p>HTML version of the message</p>",
-        attachments: [{
-            path: './package.json'
-        }]
-      };
- 
-    await transporter.sendMail(message);
-      
-    res.send("hola se envio")
-
+    console.log("entro en el emailrputes")
+    const answer = await EmailsService.sendEmail()
+    console.log(answer)
+    const arrayAnswer = ManageAnswer(answer)
+    return res.status(arrayAnswer[0]).send({
+        status: arrayAnswer[0],
+        message: arrayAnswer[1]
+    })
 })
+
+function ManageAnswer(answer) {
+    const arrayAnswer = []
+    if (answer) {
+        const splitString = answer.split("|");
+        switch (splitString[0]) {
+            case "E01":
+                arrayAnswer.push(400)
+                arrayAnswer.push(splitString[1])
+                return arrayAnswer
+                break;
+            case "E02":
+                arrayAnswer.push(404)
+                arrayAnswer.push(splitString[1])
+                return arrayAnswer
+                break;
+            case "SUC":
+                arrayAnswer.push(200)
+                arrayAnswer.push(splitString[1])
+                return arrayAnswer
+                break;
+            case "ERR":
+            default:
+                arrayAnswer.push(500)
+                arrayAnswer.push(splitString[1])
+                return arrayAnswer
+                break;
+        }
+    }
+}
+
 
 export default router

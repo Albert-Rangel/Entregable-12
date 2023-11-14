@@ -34,6 +34,7 @@ router.get("/products", privateRoutes, async (req, res) => {
     const lastname = req.session.user.lastname;
     const age = req.session.user.age;
     const email_ = req.session.user.email;
+    const cart = req.session.user.cart;
     const role = req.session.user.role;
     const swAdmin = role === 'Admin' ? true : false;
     const swUser = role === 'User' ? true : false;
@@ -42,7 +43,7 @@ router.get("/products", privateRoutes, async (req, res) => {
     res.render("catalog", {
         title: "Catalog",
         style: "catalog.css",
-        firstname, lastname, age, email_, role, swAdmin,swUser
+        firstname, lastname, age, email_, role, swAdmin,swUser,cart
     })
 })
 

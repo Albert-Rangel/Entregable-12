@@ -15,9 +15,14 @@ const userSchema = new mongoose.Schema({
     },
     password: String,
     cart: {
-        type: mongoose.Schema.Types.ObjectId,
-        default: null,
-        ref: 'carts',
+        type: [
+            {
+                id: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'carts',
+                }
+            }
+        ], default: null
     },
     role: {
         type: String,

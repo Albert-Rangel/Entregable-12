@@ -7,7 +7,10 @@ const now = new Date();
 const TicketsCollection = 'tickets';
 
 const ticketsSchema = new mongoose.Schema({
-    code: random(),
+    code: {
+        type: String,
+        default: random()
+    },
     purchase_datetime: {
         type: Date,
         default: date.format(now, 'YYYY/MM/DD HH:mm:ss')

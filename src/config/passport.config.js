@@ -2,6 +2,7 @@ import passport from "passport";
 import local from "passport-local";
 import githubStrategy from "passport-github2"
 import { userModel } from '../dao/models/user.model.js';
+import { cartsModel } from '../dao/models/carts.model.js';
 import bcrypt from 'bcrypt';
 
 const localStrategy = local.Strategy;
@@ -21,14 +22,22 @@ const initiaizePassport = () => {
                     return done(null, false)
                 }
 
+                //Creo un carrito 
+                let cart1 = {}
+                cart1 = { products: [] }
+                const cart = await cartsModel.create(cart1)
+
+                //creo el usuario
                 const user = await userModel.create({
                     firstname,
                     lastname,
                     email,
                     age,
+                    cart,
                     password: bcrypt.hashSync(password, bcrypt.genSaltSync(10)),
                     role: email == "adminCoder@coder.com" ? "Admin" : "User",
                 });
+
 
                 return done(null, user)
             }));
@@ -39,16 +48,16 @@ const initiaizePassport = () => {
             { usernameField: 'email' },
             async (username, password, done) => {
                 try {
-                    
+
                     const user = await userModel.findOne({ email: username }).lean();
-                   
+
                     if (!user) {
-                        
+
                         return done(null, false);
                     }
 
                     if (!bcrypt.compareSync(password, user.password)) {
-                       
+
                         return done(null, false);
                     }
 
@@ -74,10 +83,16 @@ const initiaizePassport = () => {
                 const email = profile.emails[0].value;
                 const user = await userModel.findOne({ email });
                 if (!user) {
+                    //Creo un carrito 
+                    let cart1 = {}
+                    cart1 = { products: [] }
+                    const cart = await cartsModel.create(cart1)
+
                     const newUser = await userModel.create({
                         firstname: words[0],
                         lastname: words[1],
                         age: 18,
+                        cart,
                         password: '',
                         email,
                         role: email == "adminCoder@coder.com" ? "Admin" : "User",
@@ -99,7 +114,7 @@ const initiaizePassport = () => {
 
     passport.deserializeUser(async (id, done) => {
         const user = await userModel.findById(id);
-        
+
         done(null, user);
     });
 }

@@ -54,6 +54,21 @@ CartRoute.get('/', async function (req, res) {
     return res.send(cartObject.sort((a, b) => a.id - b.id));
 });
 
+//Obtiene un carro por su id
+CartRoute.get('/:cid/purchase', async function (req, res) {
+    const cid = req.params.cid
+    const cartObject = await cartManager.purchaseCart(cid);
+    const isString = (value) => typeof value === 'string';
+    if (isString(cartObject)) {
+        const arrayAnswer = ManageAnswer(cartObject)
+        return res.status(arrayAnswer[0]).send({
+            status: arrayAnswer[0],
+            message: arrayAnswer[1]
+        })
+    }
+    return res.send(cartObject);
+});
+
 //crea un carro sin productos
 CartRoute.post('/', async function (req, res) {
     const answer = await cartManager.addCart()

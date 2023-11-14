@@ -17,6 +17,7 @@ export default class cartsService {
 
     async addCartProductsviaService(pid, cid) {
         try {
+            
             const cartObject = await cartsModel.findById({ _id: cid })
             if (cartObject == undefined || Object.keys(cartObject).length === 0) return `E02|El carro con el id ${cid} no se encuentra agregado.`;
 
@@ -221,6 +222,27 @@ export default class cartsService {
 
     }
 
+
+    async purchaseCart(cid) {
+        try {
+            const CartById = await cartsModel.findById(cid)
+
+            if (CartById == undefined  || Object.keys(CartById).length === 0 || CartById.length === 0) return `E02|El carro con el id ${cid} no se encuentra agregado.`;
+
+            const response = await cartsModel.updateOne(
+                { "_id": cid },
+                { $set: { products: [] } }
+            )
+            CartById.products.push(productsnew)
+            await CartById.save()
+
+            return `SUC|Carrito ${cid} actualizado.`
+        }
+        catch (error) {
+            return `ERR|Error generico. Descripcion :${error}`
+        }
+
+    }
 
 
 
