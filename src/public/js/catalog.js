@@ -106,3 +106,46 @@ const botonesCatalogo = async (CatalogList) => {
         });
     }
 };
+
+// Función para actualizar la lista de productos dentro de mi carrito
+function updateCartProductsList(CartProductsList) {
+    const catalogDiv = document.getElementById("carrito");
+    let contenidocambiante = ""
+
+    CartProductsList.forEach(({ thumbnail, _id, title }) => {
+        contenidocambiante += `<div class="form-container">
+            <div>
+                <div class="card">
+                    <img src= "${thumbnail}" alt="..." class="images">
+                    <div class="card-body">
+                        Title: ${title} </br> 
+                        Id: ${_id} </br> 
+                        <button id="btn-carrito-${_id}" class="btn btn-danger">Quitar</button>
+                    </div>
+                </div>
+            </div>
+        </div>`
+
+    });
+
+    catalogDiv.innerHTML = contenidocambiante
+}
+
+// Función para llamar al carrito personal
+function obtainPersonalCart() {
+    const buttongetCart= document.getElementById("personalCatalog");
+    console.log("entro en obtain cart")
+    const value = buttongetCart.value;
+    console.log(value)
+
+    // buttongetCart.addEventListener("click", (evt) => {
+    //     evt.preventDefault()
+    //     let pid = catalogo.id;
+    //     const cartid = document.getElementById('cartid').innerHTML;
+       
+    //     socket.emit('addNewProducttoCart', {
+    //         pid, cartid,
+    //     })
+    // });
+  
+}

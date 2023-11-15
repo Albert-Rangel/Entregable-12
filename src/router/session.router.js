@@ -20,7 +20,7 @@ router.post(
 
     // Extract the hexadecimal representation
     const hexString = objectId_.toHexString();
-    
+
 
     req.session.user = {
       firstname: req.user.firstname,
@@ -31,7 +31,8 @@ router.post(
       admin: false,
       role: req.user.role,
     };
-
+    console.log("ya guardo el req.session.user es el siguiente")
+    console.log(req.session.user)
     req.session.isLogged = true;
 
     res.redirect('/products');
@@ -82,6 +83,9 @@ router.get("/githubcallback",
       admin: false
     };
     req.session.isLogged = true;
+
+    console.log(req.session.user )
+   
 
     res.redirect("/products")
   })

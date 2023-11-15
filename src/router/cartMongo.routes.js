@@ -56,6 +56,9 @@ CartRoute.get('/', async function (req, res) {
 
 //Obtiene un carro por su id
 CartRoute.get('/:cid/purchase', async function (req, res) {
+    console.log("entro en la ruta de carros y va a imprimir el req.session")
+    console.log(req.session)
+
     const cid = req.params.cid
     const cartObject = await cartManager.purchaseCart(cid);
     const isString = (value) => typeof value === 'string';
@@ -66,6 +69,7 @@ CartRoute.get('/:cid/purchase', async function (req, res) {
             message: arrayAnswer[1]
         })
     }
+
     return res.send(cartObject);
 });
 

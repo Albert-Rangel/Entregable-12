@@ -18,6 +18,8 @@ router.get("/realTimeProducts", privateRoutes, permissionsRoutes, async (req, re
 })
 
 router.get("/home", async (req, res) => {
+    
+    
     const allProducts = await productManager.getProducts_()
 
     res.render("home", {
@@ -30,6 +32,15 @@ router.get("/home", async (req, res) => {
 
 router.get("/products", privateRoutes, async (req, res) => {
 
+    let user = {
+
+        firstname : req.session.user.firstname,
+        lastname : req.session.user.lastname,
+        age : req.session.user.age,
+        email_ : req.session.user.email,
+        cart : req.session.user.cart,
+        role : req.session.user.role,
+    }
     const firstname = req.session.user.firstname;
     const lastname = req.session.user.lastname;
     const age = req.session.user.age;
@@ -38,12 +49,12 @@ router.get("/products", privateRoutes, async (req, res) => {
     const role = req.session.user.role;
     const swAdmin = role === 'Admin' ? true : false;
     const swUser = role === 'User' ? true : false;
-    console.log(swAdmin)
+    // console.log(swAdmin)
 
     res.render("catalog", {
         title: "Catalog",
         style: "catalog.css",
-        firstname, lastname, age, email_, role, swAdmin,swUser,cart
+        firstname, lastname, age, email_, role, swAdmin,swUser,cart, user,
     })
 })
 
@@ -131,15 +142,6 @@ router.get('/failogin', publicRoutes, (req, res) => {
     })
 });
 
-
-
-router.get('/test', publicRoutes, (req, res) => {
-
-    res.render("catalog", {
-        title: "test catalog page",
-        style: "catalog.css"
-    })
-});
 
 function ManageAnswer(answer) {
     const arrayAnswer = []

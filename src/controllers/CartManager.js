@@ -129,6 +129,11 @@ class CartManager {
 
   async purchaseCart(cid) {
     try {
+      console.log("va a entrar en purchase cart")
+
+      console.log("va a imprimir el req.session.user.firstname")
+      console.log(req.session.user)
+
       let totalsum = 0
       //obtener los productos dentro del carrito
       const answer = await this.getProductsinCartById(cid)
@@ -136,65 +141,70 @@ class CartManager {
       //valido si es un string es caso fallido y retorno
       if (typeof answer == "string") return answer
 
-      //itero por cada objeto dentro del array de productos
-      for (let i = 0; i < answer.length; i++) {
-        let resultQtt = 0
-        let swResult = false
-        let stock = parseInt(answer[i].id.stock, 10); // Access the stock property within the nested object
+      // //itero por cada objeto dentro del array de productos
+      // for (let i = 0; i < answer.length; i++) {
+      //   let resultQtt = 0
+      //   let swResult = false
+      //   let stock = parseInt(answer[i].id.stock, 10); // Access the stock property within the nested object
 
-        let initialstock = stock
-        let endstock = 0
+      //   let initialstock = stock
+      //   let endstock = 0
 
 
-        let pid = answer[i].id._id; // Access the stock property within the nested object
-        let quantity = parseInt(answer[i].quantity, 10); // Access the quantity property directly
-        let price = answer[i].id.price;
-        let sumtotalprice = 0
+      //   let pid = answer[i].id._id; // Access the stock property within the nested object
+      //   let quantity = parseInt(answer[i].quantity, 10); // Access the quantity property directly
+      //   let price = answer[i].id.price;
+      //   let sumtotalprice = 0
 
-        let finalqtt = quantity
-        console.log("pid:", pid);
-        console.log("Stock:", stock);
-        console.log("Quantity:", quantity);
-        console.log("Price:", price);
-        while (!swResult) {
-          let resultQtt = stock - quantity
-          if (resultQtt >= 0) {
-            stock = resultQtt
-            swResult = true
-            finalqtt = finalqtt - quantity
-            break
-          } else {
+      //   let finalqtt = quantity
+      //   console.log("pid:", pid);
+      //   console.log("Stock:", stock);
+      //   console.log("Quantity:", quantity);
+      //   console.log("Price:", price);
+      //   while (!swResult) {
+      //     let resultQtt = stock - quantity
+      //     if (resultQtt >= 0) {
+      //       stock = resultQtt
+      //       swResult = true
+      //       finalqtt = finalqtt - quantity
+      //       break
+      //     } else {
 
-            quantity = quantity - 1
-          }
-        }
-        let amounttisubstract = initialstock - stock
-        sumtotalprice = price * amounttisubstract
-        totalsum = totalsum + sumtotalprice
-        //ya tengo la cantidad de productos que quedan de un producto en especifico en stock
-        console.log("FINAL Stock:", stock);
-        console.log("FINAL Quantity:", finalqtt);
-        console.log("sumatoria de precio", sumtotalprice)
+      //       quantity = quantity - 1
+      //     }
+      //   }
+      //   let amounttisubstract = initialstock - stock
+      //   sumtotalprice = price * amounttisubstract
+      //   totalsum = totalsum + sumtotalprice
+      //   //ya tengo la cantidad de productos que quedan de un producto en especifico en stock
+      //   console.log("FINAL Stock:", stock);
+      //   console.log("FINAL Quantity:", finalqtt);
+      //   console.log("sumatoria de precio", sumtotalprice)
 
-        //Actualizar el Quantity de ese producto
-        const updateProductQTT = productManager.updateProduct(pid, { "stock": stock })
+      //   //Actualizar el Quantity de ese producto
+      //   const updateProductQTT = productManager.updateProduct(pid, { "stock": stock })
 
-        //ELIMINAR EL PRODUCTO DEL CARRITO EN CANSO DE QTT = 0 O ACTUAKLIZAR LA CANTIDAD EN CARRITO
-        if (originalqtt = 0) {
-          //eliminar producto de carrito
-          let eliminateProdinCart = this.deleteCartProduct(pid, cid)
-        } else {
-          //Actualizamos la quantity del producto en el carrito
-          let updateProdInCart = this.updateCartProductQuantity(pid, cid, originalqtt)
-        }
-      }
+      //   //ELIMINAR EL PRODUCTO DEL CARRITO EN CANSO DE QTT = 0 O ACTUAKLIZAR LA CANTIDAD EN CARRITO
+      //   if (originalqtt = 0) {
+      //     //eliminar producto de carrito
+      //     let eliminateProdinCart = this.deleteCartProduct(pid, cid)
+      //   } else {
+      //     //Actualizamos la quantity del producto en el carrito
+      //     let updateProdInCart = this.updateCartProductQuantity(pid, cid, originalqtt)
+      //   }
+      // }
 
       //Despues de que se actualizaran los productos y se actualizara el carrito correspondiente hay que generar un ticket y despues enviar correo
+      
 
-      const ticket = await ticketsModel.create({
-        amount: totalsum,
-        purchaser: req.session.user.email
-      })
+      console.log("va a crear el ticket y posteriormente enviarlo usando el servicio de envio de correo")
+
+
+      
+      // const ticket = await ticketsModel.create({
+      //   amount: totalsum,
+      //   purchaser: req.session.user.email
+      // })
 
 
 

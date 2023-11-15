@@ -26,7 +26,7 @@ const app = express()
 // const fileStore = FileStore(session)
 
 const port = config.port;
-console.log(config)
+
 //Creacion del servidorHTTP
 const HTTPserver = app.listen(port, () =>
   console.log(`Port listening on port ${HTTPserver.address().port}`)
@@ -97,16 +97,9 @@ Socketserverio.on('connection', async (socket) => {
     Socketserverio.emit('cartInforSend', cart)
   })
   socket.on('addNewProducttoCart', async ({ pid, cartid }) => {
-    console.log("ya en el server")
-    console.log(pid)
-    console.log("|" + cartid + "|")
-
+    
     const cid = cartid.substr(1, cartid.length - 1);
-    console.log(cid); // Output: ello, world!
-
-
     const newproductincart = await cartManager.addCartProducts(pid, cid)
-
     Socketserverio.emit('newProductinCart', newproductincart)
   })
 })
@@ -125,11 +118,12 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(cookieParser())
 
+
 app.use(session({
 
   store: MongoStore.create({
     mongoUrl: config.mongourl,
-    ttl: 20,
+    ttl: 999999999999,
   }),
   secret: 'secretCoder',
   resave: false,
