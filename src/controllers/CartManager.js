@@ -130,7 +130,6 @@ class CartManager {
   async purchaseCart(cid) {
     try {
       console.log("va a entrar en purchase cart")
-
       console.log("va a imprimir el req.session.user.firstname")
       console.log(req.session.user)
 

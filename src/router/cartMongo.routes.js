@@ -59,6 +59,7 @@ CartRoute.get('/:cid/purchase', async function (req, res) {
     console.log("entro en la ruta de carros y va a imprimir el req.session")
     console.log(req.session)
 
+    
     const cid = req.params.cid
     const cartObject = await cartManager.purchaseCart(cid);
     const isString = (value) => typeof value === 'string';

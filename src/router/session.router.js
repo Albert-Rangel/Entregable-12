@@ -8,8 +8,7 @@ import { fork } from "child_process"
 
 const router = Router();
 
-router.post(
-  '/login', publicRoutes,
+router.post('/login', publicRoutes,
   passport.authenticate('login', { failureRedirect: '/failogin' }),
   async (req, res) => {
     if (!req.user) {
@@ -72,7 +71,7 @@ router.get("/githubcallback",
 
     // Extract the hexadecimal representation
     const hexString = objectId_.toHexString();
-    console.log("|" + hexString + "|")
+  
     req.session.user = {
       firstname: req.user.firstname,
       lastname: req.user.lastname,
@@ -84,8 +83,7 @@ router.get("/githubcallback",
     };
     req.session.isLogged = true;
 
-    console.log(req.session.user )
-   
+    // console.log(req.session.user )
 
     res.redirect("/products")
   })
