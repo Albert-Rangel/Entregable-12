@@ -91,7 +91,10 @@ router.get("/githubcallback",
 router.get(
   '/current', privateRoutes,
   async (req, res) => {
+    console.log("entro en currente")
     const objectId_ = req.user.cart[0]._id;
+    console.log(objectId_)
+
 
     // Extract the hexadecimal representation
     const hexString = objectId_.toHexString();
@@ -108,7 +111,6 @@ router.get(
     res.send(dtouser);
   }
 );
-
 
 
 export default router;

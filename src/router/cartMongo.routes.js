@@ -59,7 +59,12 @@ CartRoute.get('/:cid/purchase', async function (req, res) {
     console.log("entro en la ruta de carros y va a imprimir el req.session")
     console.log(req.session)
 
-    
+    console.log("entro en la ruta de carros y va a imprimir el req")
+    console.log(req)
+
+    console.log("entro en la ruta de carros y va a imprimir el req.session.user")
+    console.log(req.session.user)
+
     const cid = req.params.cid
     const cartObject = await cartManager.purchaseCart(cid);
     const isString = (value) => typeof value === 'string';
@@ -156,6 +161,31 @@ CartRoute.put('/:cid', async function (req, res) {
     })
 
 })
+
+CartRoute.get('/cartPurchase', async (req, res) => {
+   
+  
+    console.log("entro en la ruta de carros y va a imprimir el req.session.user")
+    console.log(req.session.user)
+  
+    const cid = req.session.user.cart
+    const email = req.session.user.email
+
+    const cartObject = await cartManager.purchaseCart(cid, email);
+    const isString = (value) => typeof value === 'string';
+    if (isString(cartObject)) {
+        const arrayAnswer = ManageAnswer(cartObject)
+        return res.status(arrayAnswer[0]).send({
+            status: arrayAnswer[0],
+            message: arrayAnswer[1]
+        })
+    }
+  
+    return res.send(cartObject);
+  
+    // res.redirect('/login');
+  });
+  
 
 function ManageAnswer(answer) {
     const arrayAnswer = []

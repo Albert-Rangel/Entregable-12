@@ -18,10 +18,17 @@
         LogOut
     </a>
 
-    <button id="personalCatalog"  class="boton" value="{{user}}">
+    {{!-- <button id="personalCatalog" class="boton" value="{{cart}}">
         See your Cart
-    </button>
+    </button> --}}
 
+    <a href="/PersonalCart" class="boton">
+        See your Shoopin Cart
+    </a>
+
+    {{!-- <a href="/api/carts/cartPurchase" class="boton">
+        See your Shooping Cart
+    </a> --}}
 
     {{#if swAdmin}}
     <a href="/realTimeProducts" class="boton">

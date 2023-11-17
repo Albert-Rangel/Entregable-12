@@ -56,12 +56,16 @@ Socketserverio.on('connection', async (socket) => {
 
   const productList = await productManager.getProducts(10, 1, null, null);
 
-  
+  // const productsinCart = await cartManager.getProducts(10, 1, null, null);
+
+
   // const user = req.session.user
   await Socketserverio.emit('AllProducts', productList)
 
   // await Socketserverio.emit('AllProductsCart', {productList, user})
   await Socketserverio.emit('AllProductsCart', productList)
+
+  // await Socketserverio.emit('AllProductsinCart', productList)
 
 
   socket.on('sendNewProduct', async (newP) => {
@@ -93,11 +97,20 @@ Socketserverio.on('connection', async (socket) => {
     Socketserverio.emit('newMessage', messag)
   })
   socket.on('obtainCartInfo', async (cid) => {
-    const cart = await cartManager.getCartById(cid)
-    Socketserverio.emit('cartInforSend', cart)
+    console.log("entro en obtain " + cid)
+    // const products = await cartManager.getProductsinCartById(cid)
+    Socketserverio.emit('cartProducts', products)
   })
+
+  socket.on('a', async => {
+    console.log("entro en a ")
+    const message = "mensaje de b"
+    // const products = await cartManager.getProductsinCartById(cid)
+    Socketserverio.emit('b' , message)
+  })
+
   socket.on('addNewProducttoCart', async ({ pid, cartid }) => {
-    
+
     const cid = cartid.substr(1, cartid.length - 1);
     const newproductincart = await cartManager.addCartProducts(pid, cid)
     Socketserverio.emit('newProductinCart', newproductincart)

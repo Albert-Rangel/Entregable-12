@@ -19,13 +19,24 @@ router.get("/realTimeProducts", privateRoutes, permissionsRoutes, async (req, re
 
 router.get("/home", async (req, res) => {
     
-    
     const allProducts = await productManager.getProducts_()
 
     res.render("home", {
         title: "Cards Products",
         style: "home.css",
         Products: allProducts
+
+    })
+})
+
+router.get("/PersonalCart", async (req, res) => {
+     console.log("entro en el personal cart de viewsrouter")
+    const cid = req.session.user.cart;
+
+    res.render("cart", {
+        title: "Personal Shooping Cart",
+        style: "home.css",
+        cid: cid
 
     })
 })
@@ -49,7 +60,6 @@ router.get("/products", privateRoutes, async (req, res) => {
     const role = req.session.user.role;
     const swAdmin = role === 'Admin' ? true : false;
     const swUser = role === 'User' ? true : false;
-    // console.log(swAdmin)
 
     res.render("catalog", {
         title: "Catalog",

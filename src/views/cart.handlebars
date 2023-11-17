@@ -1,8 +1,6 @@
-
-
-<div class="form-container">
+{{!-- <div class="form-container">
     <div>
-         {{#each Products}}
+        {{#each Products}}
         <div class="card">
             <img src="{{this.id.thumbnail}}" alt="..." class="images">
             <div class="card-body">
@@ -11,7 +9,21 @@
                 Code:{{this.id.code}}</br>
             </div>
         </div>
-         {{/each}}
+        {{/each}}
     </div>
+</div> --}}
+
+<a href="/api/carts/cartPurchase" class="boton">
+    Buy your products
+</a>
+
+<div class="container-fluid" style="display: inline">
+    <h2>Your Cart</h2>
+    <span id="counter" style="display: block"></span>
+    <div id="catalogo" class="row"></div>
+    <div id="cid" value="{{cid}}"> </div>
 </div>
 
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/cart.js"></script>

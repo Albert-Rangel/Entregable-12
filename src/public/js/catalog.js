@@ -1,8 +1,9 @@
 const socket = io()
 let cid = ""
+console.log(socket)
+
 
 socket.on('AllProductsCart', (data) => {
-  
     updateProductCatalogList(data);
 });
 
@@ -32,12 +33,22 @@ function updateProductCounter(data) {
     }
 }
 
-socket.on('cartInforSend', (messag) => {
-    cartID = messag.docs.id
-});
+// socket.on('cartInforSend', (messag) => {
+//     cartID = messag.docs.id
+// });
 
 // Función para actualizar la lista de productos disponibles en el catalogo en mi página web
-function updateProductCatalogList(productList) {
+async function updateProductCatalogList(productList) {
+
+
+    // console.log("va a llamar a a")
+    // //  socket.emit('obtainCartInfo',cid)
+    // await socket.emit('a')
+    // await socket.on('b', (message) => {
+    //     console.log("volio y esta en b1 " + message)
+    // })
+    // console.log("volio y esta en b2 ")
+    
     const catalogDiv = document.getElementById("catalogo");
     let contenidocambiante = ""
 
@@ -99,7 +110,7 @@ const botonesCatalogo = async (CatalogList) => {
             evt.preventDefault()
             let pid = catalogo.id;
             const cartid = document.getElementById('cartid').innerHTML;
-           
+
             socket.emit('addNewProducttoCart', {
                 pid, cartid,
             })
@@ -131,21 +142,25 @@ function updateCartProductsList(CartProductsList) {
     catalogDiv.innerHTML = contenidocambiante
 }
 
-// Función para llamar al carrito personal
-function obtainPersonalCart() {
-    const buttongetCart= document.getElementById("personalCatalog");
-    console.log("entro en obtain cart")
-    const value = buttongetCart.value;
-    console.log(value)
+// const buttongetCart = document.getElementById("personalCatalog");
 
-    // buttongetCart.addEventListener("click", (evt) => {
-    //     evt.preventDefault()
-    //     let pid = catalogo.id;
-    //     const cartid = document.getElementById('cartid').innerHTML;
-       
-    //     socket.emit('addNewProducttoCart', {
-    //         pid, cartid,
-    //     })
-    // });
-  
-}
+// buttongetCart.addEventListener("click", (evt) => {
+//     evt.preventDefault()
+//     console.log("entro en el evento click")
+//     const cid = buttongetCart.value;
+
+//     obtainPersonalCart(cid)
+
+
+// });
+
+// async function obtainPersonalCart(cid) {
+//     console.log("entro en la funcion obtainPersonalCart")
+
+//     socket.emit('obtainCartInfo', cid)
+
+//     socket.on('cartProducts', (products) => {
+//         updateProducts(data);
+//     });
+
+// }
