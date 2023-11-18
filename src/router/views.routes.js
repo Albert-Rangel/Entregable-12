@@ -18,7 +18,7 @@ router.get("/realTimeProducts", privateRoutes, permissionsRoutes, async (req, re
 })
 
 router.get("/home", async (req, res) => {
-    
+
     const allProducts = await productManager.getProducts_()
 
     res.render("home", {
@@ -30,7 +30,7 @@ router.get("/home", async (req, res) => {
 })
 
 router.get("/PersonalCart", async (req, res) => {
-     console.log("entro en el personal cart de viewsrouter")
+    console.log("entro en el personal cart de viewsrouter")
     const cid = req.session.user.cart;
 
     res.render("cart", {
@@ -41,16 +41,28 @@ router.get("/PersonalCart", async (req, res) => {
     })
 })
 
+router.get("/PersonalCartStatic", async (req, res) => {
+    console.log("entro en el personal cart de viewsrouter")
+    const cid = req.session.user.cart;
+    const allProducts = await cartManager.getProductsinCartById(cid)
+    console.log(allProducts)
+    res.render("cartStatic", {
+        title: "Personal Shooping Cart",
+        style: "catalog.css",
+        cid: allProducts
+    })
+})
+
 router.get("/products", privateRoutes, async (req, res) => {
 
     let user = {
 
-        firstname : req.session.user.firstname,
-        lastname : req.session.user.lastname,
-        age : req.session.user.age,
-        email_ : req.session.user.email,
-        cart : req.session.user.cart,
-        role : req.session.user.role,
+        firstname: req.session.user.firstname,
+        lastname: req.session.user.lastname,
+        age: req.session.user.age,
+        email_: req.session.user.email,
+        cart: req.session.user.cart,
+        role: req.session.user.role,
     }
     const firstname = req.session.user.firstname;
     const lastname = req.session.user.lastname;
@@ -64,7 +76,7 @@ router.get("/products", privateRoutes, async (req, res) => {
     res.render("catalog", {
         title: "Catalog",
         style: "catalog.css",
-        firstname, lastname, age, email_, role, swAdmin,swUser,cart, user,
+        firstname, lastname, age, email_, role, swAdmin, swUser, cart, user,
     })
 })
 

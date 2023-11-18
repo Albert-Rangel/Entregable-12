@@ -97,14 +97,15 @@ Socketserverio.on('connection', async (socket) => {
     Socketserverio.emit('newMessage', messag)
   })
   socket.on('obtainCartInfo', async (cid) => {
-    console.log("entro en obtain " + cid)
-    // const products = await cartManager.getProductsinCartById(cid)
+    const products = await cartManager.getProductsinCartByIdPagination(cid)
+    console.log("encontro los productos paginados" + products)
     Socketserverio.emit('cartProducts', products)
   })
 
   socket.on('a', async => {
     console.log("entro en a ")
     const message = "mensaje de b"
+    
     // const products = await cartManager.getProductsinCartById(cid)
     Socketserverio.emit('b' , message)
   })

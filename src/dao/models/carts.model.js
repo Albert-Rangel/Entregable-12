@@ -1,20 +1,10 @@
 import mongoose, { mongo } from "mongoose";
+import mongoosePaginate from "mongoose-paginate-v2" 
 
 const cartsCollection = 'carts';
 
 const cartsSchema = new mongoose.Schema({
-    // products: [
-    //     {
-    //         pid: {
-    //             type: String,
-    //             required: true,
-    //         },
-    //         quantity: {
-    //             type: Number,
-    //             required: true,
-    //         }
-    //     }
-    // ],
+   
     products: {
         type: [
             {
@@ -30,10 +20,12 @@ const cartsSchema = new mongoose.Schema({
         ], default: []
     },
 })
+cartsSchema.plugin(mongoosePaginate);
 
 cartsSchema.pre("find", function () {
     this.populate("products.id")
 })
+
 
 
 const cartsModel = mongoose.model(cartsCollection, cartsSchema)

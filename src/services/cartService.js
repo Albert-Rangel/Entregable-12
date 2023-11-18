@@ -17,7 +17,7 @@ export default class cartsService {
 
     async addCartProductsviaService(pid, cid) {
         try {
-            
+
             const cartObject = await cartsModel.findById({ _id: cid })
             if (cartObject == undefined || Object.keys(cartObject).length === 0) return `E02|El carro con el id ${cid} no se encuentra agregado.`;
 
@@ -84,6 +84,25 @@ export default class cartsService {
         }
     }
 
+    async getProductsinCartbyIDviaServicePagination(cid) {
+        try {
+            const cartObject = await cartsModel.paginate(
+                { _id: cid }
+                ,
+                {
+                    page: 1,
+                    limit: 100,
+                    sort: undefined,
+                    lean: true
+                });
+
+            return cartObject
+
+        } catch (error) {
+            return `ERR|Error generico. Descripcion :${error}`
+        }
+    }
+
     async deleteCartviaService(cid) {
         try {
             const cartObject = await cartsModel.find({ _id: cid }).lean()
@@ -102,24 +121,37 @@ export default class cartsService {
 
     async deleteCartProductviaService(pid, cid) {
         try {
-            console.log(pid)
+            // console.log("entro endeleteCartProductviaService")
+
             const CartById = await cartsModel.findById({ _id: cid })
+
+            // console.log("imprimir cartbyid CartById")
+            // console.log(CartById)
+
             //valido si existe el carro
             if (CartById == undefined || Object.keys(CartById).length === 0) return `E02|El carro con el id ${cid} no se encuentra agregado.`;
 
             let quantityofobjects = CartById.products.length
+            // console.log("imprimir quantityofobjects ")
+            // console.log(quantityofobjects)
 
             //valido si existe el producto dentro del carro
             let ProductinsideCart = CartById.products.find(prod => prod.id == pid)
+            // console.log("imprimir ProductinsideCart ")
+            // console.log(ProductinsideCart)
 
             if (ProductinsideCart == undefined || Object.keys(ProductinsideCart).length === 0) return `E02|El producto con el id ${pid} no se encuentra agregado al carrito con el id ${cid}.`;
 
             let productidinsideCart = CartById.products.find(prod => prod.id == pid)
+            // console.log("imprimir productidinsideCart ")
+            // console.log(productidinsideCart)
 
             let quantity = ProductinsideCart.quantity
-
+            // console.log("imprimir ProductinsideCart ")
+            // console.log(ProductinsideCart)
 
             if (quantity == 1 && quantityofobjects == 1) {
+                // console.log("primer if ")
 
                 await cartsModel.updateOne(
                     { "_id": cid },
@@ -129,6 +161,8 @@ export default class cartsService {
             }
 
             if (quantity > 1) {
+                // console.log("segundo if ")
+
                 await cartsModel.updateOne({
                     "_id": cid,
                     "products.id": pid
@@ -141,6 +175,7 @@ export default class cartsService {
             }
 
             if (quantity = 1 && quantityofobjects >= 1) {
+                // console.log("tercer if ")
 
                 await CartById.products.pull(productidinsideCart);
                 await CartById.save();
@@ -175,17 +210,17 @@ export default class cartsService {
             let { quantity } = quantity_;
 
             const cartObject = await cartsModel.findById({ _id: cid })
-            if (cartObject == undefined  || Object.keys(cartObject).length === 0 || cartObject.length === 0) return `E02|El carro con el id ${cid} no se encuentra agregado.`;
+            if (cartObject == undefined || Object.keys(cartObject).length === 0 || cartObject.length === 0) return `E02|El carro con el id ${cid} no se encuentra agregado.`;
 
             const productObject = await productsModel.find({ _id: pid })
-            if (productObject == undefined || Object.keys(productObject).length === 0  || productObject.length === 0) return `E02|El producto con el id ${pid} no se encuentra agregado.`;
+            if (productObject == undefined || Object.keys(productObject).length === 0 || productObject.length === 0) return `E02|El producto con el id ${pid} no se encuentra agregado.`;
 
             let updateObject = await cartsModel.updateOne({
                 "_id": cid,
                 "products.id": pid
             }, {
                 $set: {
-                    "products.$.quantity": quantity
+                    "products.$.quantity": quantity_
                 }
             })
             if (updateObject.modifiedCount > 0) {
@@ -205,7 +240,7 @@ export default class cartsService {
         try {
             const CartById = await cartsModel.findById(cid)
 
-            if (CartById == undefined  || Object.keys(CartById).length === 0 || CartById.length === 0) return `E02|El carro con el id ${cid} no se encuentra agregado.`;
+            if (CartById == undefined || Object.keys(CartById).length === 0 || CartById.length === 0) return `E02|El carro con el id ${cid} no se encuentra agregado.`;
 
             const response = await cartsModel.updateOne(
                 { "_id": cid },
@@ -227,7 +262,7 @@ export default class cartsService {
         try {
             const CartById = await cartsModel.findById(cid)
 
-            if (CartById == undefined  || Object.keys(CartById).length === 0 || CartById.length === 0) return `E02|El carro con el id ${cid} no se encuentra agregado.`;
+            if (CartById == undefined || Object.keys(CartById).length === 0 || CartById.length === 0) return `E02|El carro con el id ${cid} no se encuentra agregado.`;
 
             const response = await cartsModel.updateOne(
                 { "_id": cid },

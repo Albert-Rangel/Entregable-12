@@ -33,21 +33,9 @@ function updateProductCounter(data) {
     }
 }
 
-// socket.on('cartInforSend', (messag) => {
-//     cartID = messag.docs.id
-// });
-
 // Función para actualizar la lista de productos disponibles en el catalogo en mi página web
 async function updateProductCatalogList(productList) {
-
-
-    // console.log("va a llamar a a")
-    // //  socket.emit('obtainCartInfo',cid)
-    // await socket.emit('a')
-    // await socket.on('b', (message) => {
-    //     console.log("volio y esta en b1 " + message)
-    // })
-    // console.log("volio y esta en b2 ")
+    console.log(productList)
     
     const catalogDiv = document.getElementById("catalogo");
     let contenidocambiante = ""

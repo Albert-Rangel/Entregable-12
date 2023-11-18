@@ -56,15 +56,7 @@ CartRoute.get('/', async function (req, res) {
 
 //Obtiene un carro por su id
 CartRoute.get('/:cid/purchase', async function (req, res) {
-    console.log("entro en la ruta de carros y va a imprimir el req.session")
-    console.log(req.session)
-
-    console.log("entro en la ruta de carros y va a imprimir el req")
-    console.log(req)
-
-    console.log("entro en la ruta de carros y va a imprimir el req.session.user")
-    console.log(req.session.user)
-
+    
     const cid = req.params.cid
     const cartObject = await cartManager.purchaseCart(cid);
     const isString = (value) => typeof value === 'string';
@@ -105,6 +97,12 @@ CartRoute.post('/:cid/product/:pid', async function (req, res) {
 CartRoute.delete('/:cid/product/:pid', async function (req, res) {
     const cid = req.params.cid
     const id = req.params.pid
+    console.log("router paraa eliminar un producto especifico")
+
+   const pidstring = SON.stringify(id)
+    console.log(cid)
+    console.log(pidstring)
+
     const answer = await cartManager.deleteCartProduct(id, cid)
     const arrayAnswer = ManageAnswer(answer)
     return res.status(arrayAnswer[0]).send({
@@ -164,10 +162,6 @@ CartRoute.put('/:cid', async function (req, res) {
 
 CartRoute.get('/cartPurchase', async (req, res) => {
    
-  
-    console.log("entro en la ruta de carros y va a imprimir el req.session.user")
-    console.log(req.session.user)
-  
     const cid = req.session.user.cart
     const email = req.session.user.email
 

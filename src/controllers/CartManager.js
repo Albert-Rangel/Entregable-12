@@ -26,9 +26,7 @@ class CartManager {
   async addCartProducts(pid, cid) {
 
     try {
-      console.log("entro en el addcartproducts")
       const answer = await CartsService.addCartProductsviaService(pid, cid)
-      console.log("respuesta del servidor " + answer)
       if (answer == undefined || answer.length === 0) return `E02|El carro con el id ${cid} no se encuentra agregado.`;
 
       return answer
@@ -74,6 +72,17 @@ class CartManager {
     }
   }
 
+  async getProductsinCartByIdPagination(cid) {
+    try {
+
+      const cartObject = await CartsService.getProductsinCartbyIDviaServicePagination(cid)
+      return cartObject
+
+    } catch (error) {
+      return `ERR|Error generico. Descripcion :${error}`
+    }
+  }
+
   async deleteCart(cid) {
     try {
       return await CartsService.deleteCartviaService({ _id: cid })
@@ -85,6 +94,10 @@ class CartManager {
 
   async deleteCartProduct(pid, cid) {
     try {
+      // console.log("entro en deleteCartProduct")
+      // console.log(pid + " " + cid)
+      // console.log(typeof pid + " " + typeof cid)
+
       return await CartsService.deleteCartProductviaService(pid, cid)
     }
     catch (error) {
@@ -106,9 +119,7 @@ class CartManager {
   async updateCartProductQuantity(pid, cid, quantity_) {
     try {
 
-
       const CartById = await CartsService.updateProductQuantityviaService(pid, cid, quantity_)
-
       return CartById
     }
     catch (error) {
@@ -129,7 +140,7 @@ class CartManager {
 
   async purchaseCart(cid, email) {
     try {
-      
+     
       let totalsum = 0
       //obtener los productos dentro del carrito
       const answer = await this.getProductsinCartById(cid)
@@ -147,7 +158,11 @@ class CartManager {
         let endstock = 0
 
 
-        let pid = answer[i].id._id; // Access the stock property within the nested object
+        let pidobject = answer[i].id._id; // Access the stock property within the nested object
+
+        // Extract the hexadecimal representation
+        let pid = pidobject.toHexString();
+
         let quantity = parseInt(answer[i].quantity, 10); // Access the quantity property directly
         let price = answer[i].id.price;
         let sumtotalprice = 0
@@ -176,27 +191,34 @@ class CartManager {
         console.log("FINAL Stock:", stock);
         console.log("FINAL Quantity:", finalqtt);
         console.log("sumatoria de precio", sumtotalprice)
+        console.log("suma total", totalsum)
 
-        //Actualizar el Quantity de ese producto
-        //const updateProductQTT = productManager.updateProduct(pid, { "stock": stock })
 
-        //ELIMINAR EL PRODUCTO DEL CARRITO EN CANSO DE QTT = 0 O ACTUAKLIZAR LA CANTIDAD EN CARRITO
-        // if (originalqtt = 0) {
+        // //Actualizar el Quantity de ese producto
+        // const updateProductQTT = productManager.updateProduct(pid, { "stock": stock })
+
+        // //ELIMINAR EL PRODUCTO DEL CARRITO EN CANSO DE QTT = 0 O ACTUAKLIZAR LA CANTIDAD EN CARRITO
+        // if (finalqtt == 0) {
         //   //eliminar producto de carrito
+
+        //   console.log("entro en eliminar un producto del carrito")
         //   let eliminateProdinCart = this.deleteCartProduct(pid, cid)
+
         // } else {
+        //   console.log("entro en actualizar la cantidad de  un producto del carrito")
+
         //   //Actualizamos la quantity del producto en el carrito
-        //   let updateProdInCart = this.updateCartProductQuantity(pid, cid, originalqtt)
+        //   let updateProdInCart = this.updateCartProductQuantity(pid, cid, finalqtt)
         // }
       }
 
       //Despues de que se actualizaran los productos y se actualizara el carrito correspondiente hay que generar un ticket y despues enviar correo
-      
+
 
       console.log("va a crear el ticket y posteriormente enviarlo usando el servicio de envio de correo")
 
 
-      
+
       // const ticket = await ticketsModel.create({
       //   amount: totalsum,
       //   purchaser: email
