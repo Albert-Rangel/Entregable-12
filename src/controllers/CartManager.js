@@ -140,11 +140,10 @@ class CartManager {
 
   async purchaseCart(cid, email) {
     try {
-     
+
       let totalsum = 0
       //obtener los productos dentro del carrito
       const answer = await this.getProductsinCartById(cid)
-
       //valido si es un string es caso fallido y retorno
       if (typeof answer == "string") return answer
 
@@ -195,38 +194,33 @@ class CartManager {
 
 
         // //Actualizar el Quantity de ese producto
-        // const updateProductQTT = productManager.updateProduct(pid, { "stock": stock })
+        const updateProductQTT = productManager.updateProduct(pid, { "stock": stock })
 
-        // //ELIMINAR EL PRODUCTO DEL CARRITO EN CANSO DE QTT = 0 O ACTUAKLIZAR LA CANTIDAD EN CARRITO
-        // if (finalqtt == 0) {
-        //   //eliminar producto de carrito
+        //ELIMINAR EL PRODUCTO DEL CARRITO EN CANSO DE QTT = 0 O ACTUAKLIZAR LA CANTIDAD EN CARRITO
+        if (finalqtt == 0) {
+          //eliminar producto de carrito
 
-        //   console.log("entro en eliminar un producto del carrito")
-        //   let eliminateProdinCart = this.deleteCartProduct(pid, cid)
+          console.log("entro en eliminar un producto del carrito")
+          let eliminateProdinCart = this.deleteCartProduct(pid, cid)
 
-        // } else {
-        //   console.log("entro en actualizar la cantidad de  un producto del carrito")
+        } else {
+          console.log("entro en actualizar la cantidad de  un producto del carrito")
 
-        //   //Actualizamos la quantity del producto en el carrito
-        //   let updateProdInCart = this.updateCartProductQuantity(pid, cid, finalqtt)
-        // }
+          //Actualizamos la quantity del producto en el carrito
+          let updateProdInCart = this.updateCartProductQuantity(pid, cid, finalqtt)
+        }
       }
 
       //Despues de que se actualizaran los productos y se actualizara el carrito correspondiente hay que generar un ticket y despues enviar correo
 
+      const ticket = await ticketsModel.create({
+        amount: totalsum,
+        purchaser: email
+      })
 
-      console.log("va a crear el ticket y posteriormente enviarlo usando el servicio de envio de correo")
+      const emailSend = await emailService.sendEmail(ticket)
 
-
-
-      // const ticket = await ticketsModel.create({
-      //   amount: totalsum,
-      //   purchaser: email
-      // })
-
-
-
-      return 'ERR|Error generico. Descripcion: prueba'
+      return emailSend
 
       // return answer
     }

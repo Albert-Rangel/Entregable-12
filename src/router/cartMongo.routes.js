@@ -166,18 +166,17 @@ CartRoute.get('/cartPurchase', async (req, res) => {
     const email = req.session.user.email
 
     const cartObject = await cartManager.purchaseCart(cid, email);
-    const isString = (value) => typeof value === 'string';
-    if (isString(cartObject)) {
-        const arrayAnswer = ManageAnswer(cartObject)
-        return res.status(arrayAnswer[0]).send({
-            status: arrayAnswer[0],
-            message: arrayAnswer[1]
-        })
-    }
-  
-    return res.send(cartObject);
-  
-    // res.redirect('/login');
+    // const isString = (value) => typeof value === 'string';
+    // if (isString(cartObject)) {
+    //     const arrayAnswer = ManageAnswer(cartObject)
+    //     return res.status(arrayAnswer[0]).send({
+    //         status: arrayAnswer[0],
+    //         message: arrayAnswer[1]
+    //     })
+    // }
+    // return res.send(cartObject);
+    res.redirect('/products');
+
   });
   
 
